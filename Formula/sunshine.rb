@@ -10,8 +10,8 @@ class Sunshine < Formula
   license all_of: ["GPL-3.0", "BSD-3-Clause", "MIT"]
   head "https://github.com/LizardByte/Sunshine.git"
 
-  depends_on "boost" => :build
   depends_on "cmake" => :build
+  depends_on "boost"
   depends_on "curl"
   depends_on "ffmpeg"
   depends_on "node"
