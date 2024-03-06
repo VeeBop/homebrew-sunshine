@@ -12,7 +12,8 @@ class Sunshine < Formula
 
   depends_on "cmake" => :build
   depends_on "pkg-config" => :build
-  depends_on "boost"
+  depends_on "boost" => :build
+  depends_on "vite" => :build
   depends_on "curl"
   depends_on "miniupnpc"
   depends_on "node"
@@ -21,8 +22,10 @@ class Sunshine < Formula
 
   def install
     system "git", "submodule", "update", "--remote", "--init", "--recursive", "--depth", "1"
+    # Fix https://github.com/LizardByte/Sunshine/discussions/391#discussioncomment-8689960
+    system "sed", "-i", "''", "s/SUNSHINE_SOURCE_ASSETS_DIR=${SUNSHINE_SOURCE_ASSETS_DIR} SUNSHINE_ASSETS_DIR=${CMAKE_BINARY_DIR}//", "cmake/targets/common.cmake"
+
     args = %W[
-      -DCMAKE_BUILD_TYPE=Release
       -DOPENSSL_ROOT_DIR=#{Formula["openssl"].opt_prefix}
       -DSUNSHINE_ASSETS_DIR=sunshine/assets
     ]
@@ -37,7 +40,6 @@ class Sunshine < Formula
   service do
     run [opt_bin/"sunshine", "~/.config/sunshine/sunshine.conf"]
   end
-
   test do
     # test that version numbers match
     assert_match "Sunshine version: v0.22.0", shell_output("#{bin}/sunshine --version").strip
