@@ -5,22 +5,22 @@ class Sunshine < Formula
   homepage "https://app.lizardbyte.dev"
   url "https://github.com/LizardByte/Sunshine.git",
       # is tag required? won't be available until after a release is published
-      tag:      "v0.21.0",
-      revision: "5bca024899eff8f50e04c1723aeca25fc5e542ca"
-  license all_of: ["GPL-3.0", "BSD-3-Clause", "MIT"]
-  head "https://github.com/LizardByte/Sunshine.git"
+      tag:      "v0.22.0",
+      revision: "c63637f02f40a92999ba33eb96fffddce5073633"
+  license "GPL-3.0-only"
+  head "https://github.com/LizardByte/Sunshine.git", branch: "nightly"
 
   depends_on "cmake" => :build
-  depends_on "boost"
+  depends_on "pkg-config" => :build
+  depends_on "boost" => :build
   depends_on "curl"
-  depends_on "ffmpeg"
+  depends_on "miniupnpc"
   depends_on "node"
   depends_on "openssl"
   depends_on "opus"
 
   def install
-    system "npm", "install", *Language::Node.local_npm_install_args
-    system "git", "submodule", "update", "--remote", "--init", "--recursive"
+    system "git", "submodule", "update", "--remote", "--init", "--recursive", "--depth", "1"
     args = %W[
       -DCMAKE_BUILD_TYPE=Release
       -DOPENSSL_ROOT_DIR=#{Formula["openssl"].opt_prefix}
@@ -34,8 +34,12 @@ class Sunshine < Formula
     end
   end
 
+  service do
+    run [opt_bin/"sunshine", "~/.config/sunshine/sunshine.conf"]
+  end
+
   test do
     # test that version numbers match
-    assert_match "Sunshine version: v0.21.0", shell_output("#{bin}/sunshine --version").strip
+    assert_match "Sunshine version: v0.22.0", shell_output("#{bin}/sunshine --version").strip
   end
 end
