@@ -13,7 +13,6 @@ class Sunshine < Formula
   depends_on "cmake" => :build
   depends_on "pkg-config" => :build
   depends_on "boost" => :build
-  depends_on "vite" => :build
   depends_on "curl"
   depends_on "miniupnpc"
   depends_on "node"
